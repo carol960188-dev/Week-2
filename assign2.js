@@ -80,3 +80,41 @@ func3(10); // print 16
 func3(30); // print 6
 
 // task 4
+function func4(sp, stat, n){
+    if (typeof stat === "string") {
+    stat = Array.from(stat, ch => parseInt(ch));
+    }
+    let bestIndex = -1;
+    let bestDiff = Infinity;  
+
+    // step1：找可用且能容納所有乘客的車廂
+    for (let i = 0; i < sp.length; i++) {
+        if (stat[i] === 0 && sp[i] >= n) {      // 可用且位子夠
+        const diff = sp[i] - n;
+        if (diff < bestDiff) {                // 更接近剛好的
+        bestDiff = diff;
+        bestIndex = i;
+      }
+    }
+  }
+  // 若找到完全能容納的 → 直接印出
+  if (bestIndex !== -1) {
+    console.log(bestIndex);
+    return;
+  }
+
+// step2：退而求其次 → 找可用車廂中座位最多者
+  let fallbackIndex = -1;
+  let maxSeats = -1;
+  for (let i = 0; i < sp.length; i++) {
+    if (stat[i] === 0 && sp[i] > maxSeats) {
+      maxSeats = sp[i];
+      fallbackIndex = i;
+    }
+  }
+  console.log(fallbackIndex);
+}
+  
+func4([3, 1, 5, 4, 3, 2], "101000", 2); // print 5
+func4([1, 0, 5, 1, 3], "10100", 4); // print 4
+func4([4, 6, 5, 8], "1000", 4); // print 2
