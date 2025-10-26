@@ -79,4 +79,4 @@ func3(5); // print 21
 func3(10); // print 16
 func3(30); // print 6
 
-// task4
+// task 4
