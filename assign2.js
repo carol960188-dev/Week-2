@@ -61,9 +61,110 @@ func1("特南克斯"); // print 最遠丁滿,最近悟空
 
 
 // task 2
+function func2(ss, start, end, criteria) {
+  // 第一次呼叫時建立預約簿；之後沿用
+  if (!func2.booked) {
+    func2.booked = Object.fromEntries(ss.map(s => [s.name, []]));
+  } else {
+    // 若後續呼叫帶入了新服務，補上空的預約清單
+    for (const s of ss) {
+      if (!(s.name in func2.booked)) {
+        func2.booked[s.name] = [];
+      }
+    }
+  }
 
+  // 解析 criteria
+  let field, value, op;
+  if (criteria.includes(">=")) {
+    [field, value] = criteria.split(">=");
+    op = ">=";
+  } else if (criteria.includes("<=")) {
+    [field, value] = criteria.split("<=");
+    op = "<=";
+  } else if (criteria.includes("=")) {
+    [field, value] = criteria.split("=");
+    op = "=";
+  } else {
+    console.log("Sorry");
+    return;
+  }
+  field = field.trim();
+  value = value.trim();
 
+  // 檢查時段是否可用（無重疊）
+  function available(name) {
+    const booked = func2.booked[name] || [];
+    for (const [bStart, bEnd] of booked) {
+      if (!(end <= bStart || start >= bEnd)) {
+        return false; // 有重疊
+      }
+    }
+    return true;
+  }
 
+  let chosen = null;
+  let bestScore = Infinity; // 越小越好（距離門檻）
+
+  for (const s of ss) {
+    if (field === "name") {
+      if (s.name !== value) continue;
+      if (available(s.name)) {
+        chosen = s;          // 精確名稱匹配，直接選
+        bestScore = 0;
+        break;
+      }
+      continue;
+    } else {
+      // 其他欄位（如 r, c）視為數值
+      const v = Number(value);
+      const sv = Number(s[field]);
+      if (Number.isNaN(v) || Number.isNaN(sv)) continue;
+
+      let score;
+      if (op === ">=") {
+        if (sv < v) continue;
+        score = sv - v;      // 取最小但 ≥ v
+      } else if (op === "<=") {
+        if (sv > v) continue;
+        score = v - sv;      // 取最大但 ≤ v
+      } else {
+        // 題目規定其他欄位不使用等號
+        continue;
+      }
+
+      if (!available(s.name)) continue;
+
+      // 取最佳（分數小者；同分保留先遇到者）
+      if (score < bestScore) {
+        chosen = s;
+        bestScore = score;
+      }
+    }
+  }
+
+  if (!chosen) {
+    console.log("Sorry");
+  } else {
+    func2.booked[chosen.name].push([start, end]);
+    console.log(chosen.name);
+  }
+}
+
+// 測試資料與呼叫序（不可更動）
+const services = [
+  { name: "S1", r: 4.5, c: 1000 },
+  { name: "S2", r: 3,   c: 1200 },
+  { name: "S3", r: 3.8, c: 800  }
+];
+
+func2(services, 15, 17, "c>=800");  // S3
+func2(services, 11, 13, "r<=4");    // S3
+func2(services, 10, 12, "name=S3"); // Sorry
+func2(services, 15, 18, "r>=4.5");  // S1
+func2(services, 16, 18, "r>=4");    // Sorry
+func2(services, 13, 17, "name=S1"); // Sorry
+func2(services, 8, 9,   "c<=1500"); // S2
 
 
 // task 3
