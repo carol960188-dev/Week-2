@@ -64,6 +64,106 @@ func1("弗利沙") # print 最遠辛巴,最近特南克斯
 func1("特南克斯") # print 最遠丁滿,最近悟空
 
 #task 2
+def func2(ss, start, end, criteria):
+    # 初始化或沿用預約紀錄（存在函式屬性上，符合「不改外部既有程式」）
+    # hasattr(object, "屬性名") 是 Python 內建函式，用來檢查某個物件有沒有某個屬性。
+    # 幫每個服務（service）建立一個空的預約清單,每一個 key（服務名稱）對應一個 list，用來記錄該服務的預約時段
+    if not hasattr(func2, "booked"):
+        func2.booked = {s["name"]: [] for s in ss}
+    else:
+        # 若第一次後有不同的服務清單，補上鍵
+        for s in ss:
+            if s["name"] not in func2.booked:
+                func2.booked[s["name"]] = []
+
+    # 解criteria
+    if ">=" in criteria:
+        field, value = criteria.split(">=")
+        op = ">="
+    elif "<=" in criteria:
+        field, value = criteria.split("<=")
+        op = "<="
+    elif "=" in criteria:
+        field, value = criteria.split("=")
+        op = "="
+    else:
+        print("Sorry")
+        return
+
+    field = field.strip()
+    value = value.strip()
+
+    # 時段衝突檢查：有overlap則不可服務
+    def available(name):
+        for b_start, b_end in func2.booked.get(name, []):
+            if not (end <= b_start or start >= b_end):
+                return False
+        return True
+
+    chosen = None
+    best_score = None  # 越小越好（距離門檻的差距）best match
+
+    for s in ss:
+        # 先比對條件
+        if field == "name":
+            if s["name"] != value:
+                continue
+            # 名稱符合，再看是否可預約
+            if available(s["name"]):
+                chosen = s  # 只有單一精確匹配，直接選
+                best_score = 0
+                break
+            else:
+                continue
+        else:
+            # 其他欄位預設為數值（r, c）
+            try:
+                v = float(value)
+                sv = float(s[field])
+            except Exception:
+                # 欄位不存在或不是可轉浮點的值，略過
+                continue
+
+            # 檢查運算子與是否符合
+            if op == ">=":
+                if sv < v:
+                    continue
+                score = sv - v  # 越小越好（最接近門檻的最小符合者）
+            elif op == "<=":
+                if sv > v:
+                    continue
+                score = v - sv  # 越小越好（最接近門檻的最大符合者）
+            else:
+                # 題目規定其他欄位不使用等號
+                continue
+
+            # 時段可用才計分
+            if not available(s["name"]):
+                continue
+
+            # 取最佳（分數小者；同分以先出現者優先）
+            if best_score is None or score < best_score:
+                chosen = s
+                best_score = score
+
+    if chosen is None:
+        print("Sorry")
+    else:
+        func2.booked[chosen["name"]].append((start, end))
+        print(chosen["name"])
+
+services=[
+    {"name":"S1", "r":4.5, "c":1000},
+    {"name":"S2", "r":3, "c":1200},
+    {"name":"S3", "r":3.8, "c":800}
+]
+func2(services, 15, 17, "c>=800") # S3
+func2(services, 11, 13, "r<=4") # S3
+func2(services, 10, 12, "name=S3") # Sorry
+func2(services, 15, 18, "r>=4.5") # S1
+func2(services, 16, 18, "r>=4") # Sorry
+func2(services, 13, 17, "name=S1") # Sorry
+func2(services, 8, 9, "c<=1500") # S2
 
 
 # task 3
