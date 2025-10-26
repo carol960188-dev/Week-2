@@ -63,6 +63,8 @@ func1("悟空") # print 最遠丁滿、弗利沙;最近特南克斯
 func1("弗利沙") # print 最遠辛巴,最近特南克斯
 func1("特南克斯") # print 最遠丁滿,最近悟空
 
+#task 2
+
 
 # task 3
 def func3(index):  # index 是 0-based
@@ -133,4 +135,4 @@ func4([1, 0, 5, 1, 3], "10100", 4) # print 4
 func4([4, 6, 5, 8], "1000", 4) # print 2
 
 
-#task 2
+
