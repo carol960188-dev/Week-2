@@ -1,4 +1,4 @@
-// task1
+// task 1
 function func1(name){
 const chars = [
   { name: "悟空",   x: 0,  y: 0 },
@@ -60,7 +60,7 @@ func1("弗利沙"); // print 最遠辛巴,最近特南克斯
 func1("特南克斯"); // print 最遠丁滿,最近悟空
 
 
-// task3
+// task 3
 function func3(index){ // index 是 0-based
   const numbers = [25, 23, 20, 21, 23, 21, 18, 19, 21, 19, 16, 17];
   const pattern = [-2, -3, 1, 2];
