@@ -60,6 +60,12 @@ func1("弗利沙"); // print 最遠辛巴,最近特南克斯
 func1("特南克斯"); // print 最遠丁滿,最近悟空
 
 
+// task 2
+
+
+
+
+
 // task 3
 function func3(index){ // index 是 0-based
   const numbers = [25, 23, 20, 21, 23, 21, 18, 19, 21, 19, 16, 17];
@@ -78,6 +84,7 @@ func3(1); // print 23
 func3(5); // print 21
 func3(10); // print 16
 func3(30); // print 6
+
 
 // task 4
 function func4(sp, stat, n){
