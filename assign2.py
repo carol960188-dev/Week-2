@@ -98,3 +98,39 @@ func3(30) # print 6
 
 
 #task 4
+def func4(sp, stat, n):
+    # 如果 stat 是字串，例如 "101000"，先轉成整數 list, 檢查變數 stat 是不是「字串」（str 型別）。
+    if isinstance(stat, str):
+        stat = [int(ch) for ch in stat]
+
+    best_index = -1
+    best_diff = float('inf')  # 越小越接近剛好
+
+    # 逐一檢查每節車廂
+    for i in range(len(sp)):
+        # 只考慮可載客 (stat[i]==0) 且座位夠 (sp[i]>=n)
+        if stat[i] == 0 and sp[i] >= n:
+            diff = sp[i] - n
+            # 找出差距最小（最剛好）的車廂
+            if diff < best_diff:
+                best_diff = diff
+                best_index = i
+
+    # 若沒找到符合條件的，就退而求其次：選可用車廂中座位最多的, 車廂可不可用與車廂剩幾個位置是獨立的兩件事情,要分開討論．如果可用的車廂的位置數都小於乘客數，那就選擇位置最多的那一個可用車廂.
+    
+    if best_index == -1:
+        max_space = -1
+        for i in range(len(sp)):
+            if stat[i] == 0 and sp[i] > max_space:
+                max_space = sp[i]
+                best_index = i
+
+    # 直接在函式內印出結果，不需要在function外面再包 print()
+    print(best_index)
+
+func4([3, 1, 5, 4, 3, 2], "101000", 2) # print 5
+func4([1, 0, 5, 1, 3], "10100", 4) # print 4
+func4([4, 6, 5, 8], "1000", 4) # print 2
+
+
+#task 2
